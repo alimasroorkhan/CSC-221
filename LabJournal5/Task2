@@ -1,0 +1,27 @@
+void list::reverse()
+{
+    if (emptyList())
+    {
+        cout << "List is empty. Nothing to reverse." << endl;
+        return;
+    }
+
+    node* current = head;
+    node* temp = nullptr;
+
+    // Swap next and prev for all nodes
+    while (current != nullptr)
+    {
+        temp = current->prev; // Temporarily store the previous node
+        current->prev = current->next; // Reverse the next pointer
+        current->next = temp; // Reverse the prev pointer
+        current = current->prev; // Move to the next node (which is prev now)
+    }
+
+    // Adjust head and tail
+    if (temp != nullptr)
+    {
+        tail = head;
+        head = temp->prev;
+    }
+}
