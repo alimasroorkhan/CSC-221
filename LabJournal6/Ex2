@@ -1,1 +1,63 @@
+#include <iostream>
+#include <fstream>
+#include <stack>
+#include <string>
+using namespace std;
+
+/**
+ * @brief Reads a string from a file, reverses it using a stack, and writes it to another file.
+ * @param inputFileName The name of the input file.
+ * @param outputFileName The name of the output file.
+ */
+void reverseStringFromFile(const string& inputFileName, const string& outputFileName)
+{
+    ifstream inputFile(inputFileName);
+    if (!inputFile)
+    {
+        cout << "Error opening input file!" << endl;
+        return;
+    }
+
+    string str;
+    getline(inputFile, str);
+    inputFile.close();
+
+    stack<char> stack;
+
+    // Push all characters onto the stack
+    for (char ch : str)
+    {
+        stack.push(ch);
+    }
+
+    ofstream outputFile(outputFileName);
+    if (!outputFile)
+    {
+        cout << "Error opening output file!" << endl;
+        return;
+    }
+
+    // Pop characters from the stack to reverse the string
+    while (!stack.empty())
+    {
+        outputFile.put(stack.top());
+        stack.pop();
+    }
+    outputFile.close();
+
+    cout << "Reversed string written to " << outputFileName << endl;
+}
+
+int main()
+{
+    string inputFile, outputFile;
+    cout << "Enter input file name: ";
+    cin >> inputFile;
+    cout << "Enter output file name: ";
+    cin >> outputFile;
+
+    reverseStringFromFile(inputFile, outputFile);
+
+    return 0;
+}
 
