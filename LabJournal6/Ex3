@@ -1,1 +1,63 @@
+#include <iostream>
+#include <fstream>
+#include <stack>
+#include <string>
+using namespace std;
+
+/**
+ * @brief Verifies the validity of parentheses in a mathematical expression.
+ * @param expression The mathematical expression.
+ * @return True if parentheses are balanced, false otherwise.
+ */
+bool areParenthesesBalanced(const string& expression)
+{
+    stack<char> stack;
+
+    for (char ch : expression)
+    {
+        if (ch == '(') 
+            stack.push(ch);
+        else if (ch == ')') 
+        {
+            if (stack.empty()) return false;
+            stack.pop();
+        }
+    }
+
+    return stack.empty();
+}
+
+/**
+ * @brief Reads a mathematical expression from a file and checks if parentheses are balanced.
+ * @param fileName The name of the input file.
+ */
+void verifyParenthesesInFile(const string& fileName)
+{
+    ifstream inputFile(fileName);
+    if (!inputFile)
+    {
+        cout << "Error opening file!" << endl;
+        return;
+    }
+
+    string expression;
+    getline(inputFile, expression);
+    inputFile.close();
+
+    if (areParenthesesBalanced(expression))
+        cout << "The parentheses are balanced." << endl;
+    else
+        cout << "The parentheses are NOT balanced." << endl;
+}
+
+int main()
+{
+    string fileName;
+    cout << "Enter the file name with the mathematical expression: ";
+    cin >> fileName;
+
+    verifyParenthesesInFile(fileName);
+
+    return 0;
+}
 
