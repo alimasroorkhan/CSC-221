@@ -1,1 +1,154 @@
+#include <iostream>
+using namespace std;
+
+/**
+ * @brief Represents a node in a linked list for stack implementation.
+ */
+struct Node
+{
+    int data; /**< The data stored in the node */
+    Node* next; /**< Pointer to the next node in the stack */
+
+    /**
+     * @brief Constructor to initialize a node with a given value.
+     * @param value The value to be stored in the node.
+     */
+    Node(int value) : data(value), next(nullptr) {}
+};
+
+/**
+ * @brief Stack class that implements a stack using a linked list.
+ */
+class Stack 
+{
+private:
+    Node* top; /**< Pointer to the top of the stack */
+
+public:
+    /**
+     * @brief Constructs an empty stack.
+     */
+    Stack() : top(nullptr) {}
+
+    /**
+     * @brief Adds an element to the top of the stack.
+     * @param value The value to be added to the stack.
+     */
+    void push(int value)
+    {
+        Node* newNode = new Node(value);
+        newNode->next = top;
+        top = newNode;
+    }
+
+    /**
+     * @brief Removes and returns the top element of the stack.
+     * @return The value of the top element, or -1 if the stack is empty.
+     */
+    int pop() 
+    {
+        if (top == nullptr)
+        {
+            return -1; // Stack is empty, returning error value
+        }
+        Node* temp = top;
+        int value = top->data;
+        top = top->next;
+        delete temp;
+        return value;
+    }
+
+    /**
+     * @brief Checks if the stack is empty.
+     * @return True if the stack is empty, false otherwise.
+     */
+    bool isEmpty() const
+    {
+        return top == nullptr;
+    }
+
+    /**
+     * @brief Destructor that cleans up all nodes in the stack.
+     */
+    ~Stack() 
+    {
+        while (top != nullptr)
+        {
+            Node* temp = top;
+            top = top->next;
+            delete temp;
+        }
+    }
+};
+
+/**
+ * @brief Converts a decimal number to its binary representation using a stack.
+ * @param num The decimal number to be converted to binary.
+ */
+void dectobin(int num) {
+    Stack binaryStack;
+
+    if (num == 0)
+    {
+        cout << "Binary is 0" << endl;
+        return;
+    }
+
+    while (num > 0) 
+    {
+        binaryStack.push(num % 2);
+        num /= 2;
+    }
+
+    cout << "Binary: ";
+    while (!binaryStack.isEmpty()) 
+    {
+        cout << binaryStack.pop();
+    }
+    cout << endl;
+}
+
+/**
+ * @brief Converts a decimal number to its octal representation using a stack.
+ * @param num The decimal number to be converted to octal.
+ */
+void dectooct(int num)
+{
+    Stack octalStack;
+
+    if (num == 0)
+    {
+        cout << "Octal is 0" << endl;
+        return;
+    }
+
+    while (num > 0)
+    {
+        octalStack.push(num % 8);
+        num /= 8;
+    }
+
+    cout << "Octal: ";
+    while (!octalStack.isEmpty())
+    {
+        cout << octalStack.pop();
+    }
+    cout << endl;
+}
+
+/**
+ * @brief Main function to drive the program.
+ * @return Integer value representing the success or failure of the program.
+ */
+int main()
+{
+    int number;
+    cout << "Enter decimal number: ";
+    cin >> number;
+
+    dectobin(number);
+    dectooct(number);
+
+    return 0;
+}
 
