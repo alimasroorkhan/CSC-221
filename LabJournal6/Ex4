@@ -1,1 +1,72 @@
+#include <iostream>
+#include <fstream>
+#include <stack>
+#include <string>
+#include <cctype>
+using namespace std;
+
+/**
+ * @brief Evaluates a postfix expression using a stack.
+ * @param expression The postfix expression as a string.
+ * @return The result of the expression.
+ */
+int evaluatePostfix(const string& expression)
+{
+    stack<int> stack;
+
+    for (char ch : expression)
+    {
+        if (isdigit(ch))
+        {
+            stack.push(ch - '0');  // Convert char to int
+        }
+        else
+        {
+            int operand2 = stack.top(); stack.pop();
+            int operand1 = stack.top(); stack.pop();
+
+            switch (ch)
+            {
+                case '+': stack.push(operand1 + operand2); break;
+                case '-': stack.push(operand1 - operand2); break;
+                case '*': stack.push(operand1 * operand2); break;
+                case '/': stack.push(operand1 / operand2); break;
+            }
+        }
+    }
+
+    return stack.top();
+}
+
+/**
+ * @brief Reads a postfix expression from a file and evaluates it.
+ * @param fileName The name of the input file.
+ */
+void evaluatePostfixFromFile(const string& fileName)
+{
+    ifstream inputFile(fileName);
+    if (!inputFile)
+    {
+        cout << "Error opening file!" << endl;
+        return;
+    }
+
+    string expression;
+    getline(inputFile, expression);
+    inputFile.close();
+
+    int result = evaluatePostfix(expression);
+    cout << "Result of postfix expression: " << result << endl;
+}
+
+int main()
+{
+    string fileName;
+    cout << "Enter the file name with the postfix expression: ";
+    cin >> fileName;
+
+    evaluatePostfixFromFile(fileName);
+
+    return 0;
+}
 
