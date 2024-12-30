@@ -1,0 +1,81 @@
+#include <iostream>
+using namespace std;
+
+// Node class for the binary tree
+class Node
+{
+public:
+    int data;
+    Node* left;
+    Node* right;
+
+    Node(int value) // Constructor to set up a new node
+    {
+        data = value;
+        left = nullptr;
+        right = nullptr;
+    }
+};
+
+// BinaryTree class to implement the required counting functions
+class BinaryTree
+{
+public:
+    int countLeafNodes(Node* root);       // Counts all the leaf nodes in the tree
+    int countNonLeafNodes(Node* root);   // Counts all the non-leaf nodes in the tree
+};
+
+// This one counts all the leaf nodes (the ones with no kids)
+int BinaryTree::countLeafNodes(Node* root)
+{
+    if (root == nullptr) // If there's no tree, obviously no leaves
+        return 0;
+
+    // If it's a leaf (no left or right child), count it
+    if (root->left == nullptr && root->right == nullptr)
+        return 1;
+
+    // Otherwise, check the left and right subtrees and add up the results
+    return countLeafNodes(root->left) + countLeafNodes(root->right);
+}
+
+// This one counts all the non-leaf nodes (the ones with at least one kid)
+int BinaryTree::countNonLeafNodes(Node* root)
+{
+    // If there's no tree or it's a leaf, there are no non-leaf nodes here
+    if (root == nullptr || (root->left == nullptr && root->right == nullptr))
+        return 0;
+
+    // Count this node as non-leaf and check left and right subtrees
+    return 1 + countNonLeafNodes(root->left) + countNonLeafNodes(root->right);
+}
+
+// Main function to test all this out
+int main()
+{
+    // Okay, now let's build the tree from the picture
+    Node* root = new Node(1); // Start with the root
+    root->left = new Node(3);
+    root->right = new Node(14);
+    root->left->left = new Node(4);
+    root->left->right = new Node(7);
+    root->left->left->left = new Node(5);
+    root->right->left = new Node(9);
+    root->right->right = new Node(15);
+    root->right->left->left = new Node(16);
+    root->right->left->right = new Node(17);
+    root->right->right->right = new Node(18);
+    root->right->right->right->right = new Node(20);
+
+    BinaryTree tree;
+
+    // Count leaf and non-leaf nodes
+    int leafCount = tree.countLeafNodes(root); // Get all the leaves
+    int nonLeafCount = tree.countNonLeafNodes(root); // Get all the non-leaf nodes
+
+    // Show the results
+    cout << "Total number of leaf nodes: " << leafCount << endl; // Pretty straightforward
+    cout << "Total number of non-leaf nodes: " << nonLeafCount << endl; // Same here
+
+    return 0;
+}
