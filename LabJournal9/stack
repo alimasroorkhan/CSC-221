@@ -1,0 +1,93 @@
+#include <iostream>
+#include <stack>
+using namespace std;
+
+class TNode
+{
+public:
+    char data;
+    TNode* left;
+    TNode* right;
+
+    TNode(char value) // Constructor for TNode
+    {
+        data = value;
+        left = nullptr;
+        right = nullptr;
+    }
+};
+
+class ExpressionTree
+{
+public:
+    TNode* constructTree(const string& postfix); // Build expression tree
+    void postorder(TNode* root);                // Postorder traversal to verify
+};
+
+TNode* ExpressionTree::constructTree(const string& postfix)
+{
+    stack<TNode*> s; // Stack to hold tree nodes
+
+    for (char symbol : postfix)
+    {
+        if (isalpha(symbol)) // If the symbol is an operand
+        {
+            TNode* newnode = new TNode(symbol); // Create a new node
+            s.push(newnode); // Push the node onto the stack
+        }
+        else // If the symbol is an operator
+        {
+            TNode* newnode = new TNode(symbol); // Create a new node for the operator
+
+            // Pop two nodes from the stack
+            TNode* T2 = s.top();
+            s.pop();
+            TNode* T1 = s.top();
+            s.pop();
+
+            // Set T1 and T2 as left and right children of the operator node
+            newnode->left = T1;
+            newnode->right = T2;
+
+            // Push the new node back onto the stack
+            s.push(newnode);
+        }
+    }
+
+    // The root of the expression tree is the last node remaining in the stack
+    return s.top();
+}
+
+void ExpressionTree::postorder(TNode* root)
+{
+    if (root == nullptr)
+    {
+        return;
+    }
+
+    // Traverse left subtree
+    postorder(root->left);
+
+    // Traverse right subtree
+    postorder(root->right);
+
+    // Print the current node
+    cout << root->data;
+}
+
+// Main function to test the implementation
+int main()
+{
+    ExpressionTree tree;
+    string postfix = "ab+ef*g*-"; // Postfix expression
+
+    // Construct the expression tree
+    TNode* root = tree.constructTree(postfix);
+
+    // Verify by postorder traversal
+    cout << "Postorder Traversal (should match postfix expression): ";
+    tree.postorder(root);
+    cout << endl;
+
+    return 0;
+}
