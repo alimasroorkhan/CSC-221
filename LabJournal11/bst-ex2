@@ -1,0 +1,163 @@
+#include <iostream>
+using namespace std;
+
+// Node class for the Binary Search Tree (BST)
+class TNode {
+public:
+    int data;
+    TNode* left;
+    TNode* right;
+
+    TNode() // Default constructor
+    {
+        data = 0;
+        left = nullptr;
+        right = nullptr;
+    }
+
+    TNode(int value) // Parameterized constructor
+    {
+        data = value;
+        left = nullptr;
+        right = nullptr;
+    }
+};
+
+// Binary Search Tree class
+class BST {
+public:
+    TNode* root;
+
+    BST(); // Constructor
+    void insert(TNode* node, int value); // Insert a node
+    void in_orderTraverse(TNode* node); // In-order traversal (ascending order)
+};
+
+// Constructor for BST
+BST::BST()
+{
+    root = nullptr;
+}
+
+// Insert a node into the BST
+void BST::insert(TNode* node, int value)
+{
+    if (root == nullptr) {
+        root = new TNode(value);
+        return;
+    }
+    if (value < node->data) {
+        if (node->left == nullptr) {
+            node->left = new TNode(value);
+        }
+        else {
+            insert(node->left, value);
+        }
+    }
+    else {
+        if (node->right == nullptr) {
+            node->right = new TNode(value);
+        }
+        else {
+            insert(node->right, value);
+        }
+    }
+}
+
+// In-order traversal (ascending order)
+void BST::in_orderTraverse(TNode* node)
+{
+    if (node == nullptr) return;
+    in_orderTraverse(node->left);
+    cout << node->data << " ";
+    in_orderTraverse(node->right);
+}
+
+// 1. Print the path to the node
+void printPath(TNode* node, int value)
+{
+    if (node == nullptr) {
+        cout << "Value not found in the tree." << endl;
+        return;
+    }
+
+    cout << node->data << " "; // Print current node
+    if (value < node->data) {
+        printPath(node->left, value); // Go left
+    }
+    else if (value > node->data) {
+        printPath(node->right, value); // Go right
+    }
+    else {
+        cout << endl; // Path ends when value is found
+    }
+}
+
+// 2. Find the maximum value in the BST
+int findMax(TNode* node)
+{
+    if (node == nullptr) {
+        cout << "The tree is empty." << endl;
+        return -1;
+    }
+
+    while (node->right != nullptr) {
+        node = node->right; // Keep going right
+    }
+    return node->data; // Rightmost node is the maximum
+}
+
+// 3. Find the sibling of a given node
+int findSibling(TNode* root, int value)
+{
+    if (root == nullptr || root->data == value) return -1;
+
+    if ((root->left && root->left->data == value) && root->right) {
+        return root->right->data; // Sibling is the right child
+    }
+    if ((root->right && root->right->data == value) && root->left) {
+        return root->left->data; // Sibling is the left child
+    }
+
+    // Check in left and right subtrees
+    if (value < root->data) return findSibling(root->left, value);
+    return findSibling(root->right, value);
+}
+
+// Main function to test the program
+int main()
+{
+    BST tree;
+
+    // Create the BST
+    int values[] = { 50, 30, 70, 20, 40, 60, 80 };
+    for (int value : values) {
+        tree.insert(tree.root, value);
+    }
+
+    // Print the in-order traversal
+    cout << "In-order Traversal of the BST: ";
+    tree.in_orderTraverse(tree.root);
+    cout << endl;
+
+    // 1. Print the path to a node
+    int pathValue = 60;
+    cout << "Path to " << pathValue << ": ";
+    printPath(tree.root, pathValue);
+
+    // 2. Find the maximum value in the BST
+    int maxValue = findMax(tree.root);
+    cout << "Maximum value in the BST: " << maxValue << endl;
+
+    // 3. Find the sibling of a given node
+    int siblingValue = 40;
+    int sibling = findSibling(tree.root, siblingValue);
+    if (sibling != -1) {
+        cout << "Sibling of " << siblingValue << ": " << sibling << endl;
+    }
+    else {
+        cout << siblingValue << " has no sibling." << endl;
+    }
+
+    return 0;
+}
