@@ -1,0 +1,135 @@
+#include <iostream>
+#include <climits>
+using namespace std;
+
+// MinHeap class
+class MinHeap {
+public:
+    int* harr;       // Pointer to array representing the heap
+    int capacity;    // Maximum capacity of the heap
+    int heap_size;   // Current size of the heap
+
+    // Constructor
+    MinHeap(int cap) {
+        heap_size = 0;
+        capacity = cap;
+        harr = new int[cap];
+    }
+
+    // Utility function to get parent index
+    int parent(int i) { return (i - 1) / 2; }
+
+    // Utility function to get left child index
+    int left(int i) { return (2 * i) + 1; }
+
+    // Utility function to get right child index
+    int right(int i) { return (2 * i) + 2; }
+
+    // Swap function
+    void swap(int* x, int* y) {
+        int temp = *x;
+        *x = *y;
+        *y = temp;
+    }
+
+    // Inserts a new key
+    void insertKey(int k) {
+        if (heap_size == capacity) {
+            cout << "Overflow: Could not insert key\n";
+            return;
+        }
+
+        // First insert the new key at the end
+        heap_size++;
+        int i = heap_size - 1;
+        harr[i] = k;
+
+        // Fix the min heap property if it is violated
+        while (i != 0 && harr[parent(i)] > harr[i]) {
+            swap(&harr[i], &harr[parent(i)]);
+            i = parent(i);
+        }
+    }
+
+    // Heapify a subtree with the root at given index
+    void MinHeapify(int i) {
+        int l = left(i);
+        int r = right(i);
+        int smallest = i;
+        if (l < heap_size && harr[l] < harr[i])
+            smallest = l;
+        if (r < heap_size && harr[r] < harr[smallest])
+            smallest = r;
+        if (smallest != i) {
+            swap(&harr[i], &harr[smallest]);
+            MinHeapify(smallest);
+        }
+    }
+
+    // Extract the root (minimum element)
+    int extractMin() {
+        if (heap_size <= 0)
+            return INT_MAX;
+        if (heap_size == 1) {
+            heap_size--;
+            return harr[0];
+        }
+
+        // Store the minimum value and remove it
+        int root = harr[0];
+        harr[0] = harr[heap_size - 1];
+        heap_size--;
+        MinHeapify(0);
+
+        return root;
+    }
+
+    // Delete a key at index i
+    void deleteKey(int i) {
+        if (i < 0 || i >= heap_size) {
+            cout << "Invalid index\n";
+            return;
+        }
+
+        decreaseKey(i, INT_MIN); // Decrease the key to minimum
+        extractMin();           // Remove the minimum element
+    }
+
+    // Decrease a key at index i to a new value
+    void decreaseKey(int i, int new_val) {
+        harr[i] = new_val;
+        while (i != 0 && harr[parent(i)] > harr[i]) {
+            swap(&harr[i], &harr[parent(i)]);
+            i = parent(i);
+        }
+    }
+
+    // Get the minimum key (root)
+    int getMin() {
+        if (heap_size <= 0)
+            return INT_MAX;
+        return harr[0];
+    }
+};
+
+// Main function to validate the implementation
+int main() {
+    MinHeap h(10);
+
+    // Insert keys into the heap
+    h.insertKey(3);
+    h.insertKey(1);
+    h.insertKey(6);
+    h.insertKey(5);
+    h.insertKey(2);
+    h.insertKey(4);
+
+    // Display the minimum element
+    cout << "Minimum element: " << h.getMin() << endl;
+
+    // Delete the minimum element and display again
+    h.extractMin();
+    cout << "Minimum element after deletion: " << h.getMin() << endl;
+
+    return 0;
+}
